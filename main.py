@@ -1,5 +1,6 @@
 import sqlite3
-import scrapper_arXiv as sp
+import scraper_arXiv as sp
+from apscheduler.schedulers.blocking import BlockingScheduler
 
 
 def initialize_database():
@@ -21,11 +22,21 @@ def initialize_database():
 if __name__ == "__main__":
     initialize_database()
     url = "https://arxiv.org/list/cs/new"
+    num_articles = 3
+    hour = 9
+
+    scraper = sp.ScraperArXiv(url)
 
     # Fetch articles immediately for testing
-    articles = sp.fetch_articles(url)
+    articles = scraper.fetch_articles(num_articles)
     if articles is not None:
         print(articles)
 
     # Schedule the daily task
-    sp.schedule_task('9', url)
+    scheduler = BlockingScheduler()
+    scheduler.add_job(scraper.fetch_articles, 'cron', hour=hour, args=[num_articles])  # Set to run daily at specified hour.
+    print(f"Scheduler started. Task is set to run daily at {hour} .")
+    try:
+        scheduler.start()
+    except (KeyboardInterrupt, SystemExit):
+        print("Scheduler stopped manually.")
