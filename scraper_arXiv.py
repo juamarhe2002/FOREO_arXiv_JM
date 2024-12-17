@@ -1,7 +1,6 @@
 import requests
 from bs4 import BeautifulSoup, PageElement
 import re
-import pandas as pd
 import sqlite3
 
 
@@ -77,27 +76,21 @@ class ScraperArXiv:
 
         return article_data
 
-    # Function to save the subjects of the articles.
-    @staticmethod
-    def save_articles_subjects(subjects: dict, new_article: dict):
-        new_subjects = new_article['subjects'].split(';')
+    # Function to append new articles if they have a higher popularity than one of the already appended ones.
+    def append_by_popularity(self, new_article: dict):
+        for article in self.articles:
+            if new_article['popularity'] > article['popularity']:
+                self.articles.remove(article)
+                self.articles.append(new_article)
+                return
 
-        for new_subject in new_subjects:
-            if new_subject not in subjects:
-                subjects[new_subject] = [[new_article['arXiv_id'], new_article['popularity']]]
-            else:
-                subjects[new_subject].append([new_article['arXiv_id'], new_article['popularity']])
+    # Function to check if all the articles on the list have the highes possible popularity.
+    def chk_articles_popularity(self) -> bool:
+        for article in self.articles:
+            if article['popularity'] < 2:
+                return False
 
-    # Function for checking the number of articles of each subject and returning the
-    # subject that has an equivalent number of articles as the one required.
-    # returns: subject name (str) | (None)
-    @staticmethod
-    def chk_articles_number(subjects: dict, num_articles: int) -> str | None:
-        for subject in subjects:
-            if len(subjects[subject]) == num_articles:
-                return subject
-
-        return None
+        return True
 
     # Function to fetch and parse HTML content from arXiv
     def fetch_articles(self, num_articles: int) -> list[dict] | None:
@@ -108,27 +101,27 @@ class ScraperArXiv:
             soup = BeautifulSoup(response.text, 'html.parser')  # Parse HTML content
 
             # Extract metadata for each article
-            subjects = dict()
-            articles = []
+            self.articles = []
             items = soup.find_all('dd')  # Content of articles is in <dd> tags
             for item in items:
                 new_article = self.extract_article_data(item)
 
                 if self.is_new_article(new_article['arXiv_id']) and not self.has_text_overlap(new_article):
-                    if new_article['popularity'] == 2:
-                        articles.append(new_article)
+                    if len(self.articles) < num_articles:
+                        self.articles.append(new_article)
+                    else:
+                        self.append_by_popularity(new_article)
 
-                    if len(articles) == num_articles:
-                        self.save_articles(articles)
-                        self.articles = articles
+                    if self.chk_articles_popularity():
+                        self.save_articles(self.articles)
                         break
 
             print("Scraper: Fetched new articles successfully!")
             return self.articles
 
         except requests.RequestException as e:
-            print(f"Error fetching data from url {self.url}: {e}")
+            print(f"Could not fetch data from url {self.url}:\n {e}")
             return None
-        except Exception as e:
-            print(f"Error parsing data: {e}")
-            return None
+        except Exception:
+            print(f"Error parsing data in fetch_articles() function:\n")
+            raise
