@@ -43,7 +43,7 @@ class ScraperArXiv:
             return 2
 
         if len(comments_text) > 0:
-            match = re.search(r"([tT]o be ){0}(([aA]ccepted)|([pP]ublished))\s", comments_text)
+            match = re.search(r"(?<!([tT]o be ))(([aA]ccepted)|([pP]ublished))\s", comments_text)
             if match is not None:
                 return 1
 
@@ -59,8 +59,8 @@ class ScraperArXiv:
         pdf_link = "https://arxiv.org" + title_tag.find('a', title='Download PDF')['href']
 
         journal_ref = item.find('div', class_='list-journal-ref')
-        comments = item.find('div', 'list-comments')
-        comments_text = comments.get_text(strip=True) if comments is not None else ''
+        comments = item.find('div', class_='list-comments')
+        comments_text = comments.get_text(strip=True).replace('Comments:', '') if comments is not None else ''
 
         popularity = self.calculate_popularity(journal_ref, comments_text)
 
@@ -123,5 +123,5 @@ class ScraperArXiv:
             print(f"Could not fetch data from url {self.url}:\n {e}")
             return None
         except Exception:
-            print(f"Error parsing data in fetch_articles() function:\n")
+            print(f"Error parsing data in fetch_articles({num_articles}) function:\n")
             raise
