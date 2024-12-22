@@ -13,6 +13,8 @@ def initialize_database():
             title TEXT UNIQUE NOT NULL,
             authors TEXT NOT NULL,
             subjects TEXT NOT NULL,
+            comments TEXT,
+            popularity INTEGER DEFAULT 0,
             pdf_link TEXT NOT NULL);
         ''')
     conn.commit()
