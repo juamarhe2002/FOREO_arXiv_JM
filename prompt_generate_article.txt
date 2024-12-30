@@ -1,0 +1,27 @@
+OUTLINE
+Act as an experienced SEO copywriter tasked with creating a comprehensive and engaging outline for an article about [summaries].
+The outline should structure the article in a way that is both reader-friendly and optimized for search engines.
+Begin with an eye-catching headline that incorporates the primary keyword. Following the headline, draft a compelling introduction that hooks the reader and clearly states what the article will cover.
+The body of the outline should be broken down into several sections, each with a subheading that includes relevant keywords.
+These sections should logically flow from one to the next, covering all the necessary aspects of [summaries] in detail.
+Include bullet points or numbered lists where appropriate to make the information more digestible.
+For each section, briefly note the key points and any data or sources that should be included to back up those points.
+OUTLINE_END
+
+ARTICLE_GEN
+Act as an experienced SEO copywriter, tasked with writing a [n] words long article based on the provided [outline].
+Your primary goal is to craft a compelling, informative piece that not only adheres to SEO best practices but also ranks high on search engines for the chosen keywords.
+The article should be based on [summaries], engaging to the target audience, and structured in a way that enhances readability (using headings, subheadings, bullet points, etc.).
+Incorporate relevant keywords naturally throughout the text, without compromising the flow or quality of the content.
+Ensure that the article answers the questions or solves the problems outlined, providing value to the reader.
+Additionally, include a strong call-to-action that encourages reader engagement.
+ARTICLE_GEN_END
+
+ARTICLE_ENHANCEMENT
+Act as an experienced SEO copywriter tasked with editing [article_gen] for clarity and coherence.
+Your primary goal is to enhance the readability and SEO performance of the article without compromising its original tone and message.
+Focus on optimizing the content structure, ensuring keyword integration is natural and aligns with search intent, and improving the overall flow of the text.
+Identify and eliminate any redundant or unclear sentences, and ensure that the article maintains a consistent voice throughout.
+Pay special attention to headlines and subheadings, optimizing them for click-through rates and search engine visibility.
+Additionally, incorporate links to [articles] where appropriate to boost the article's SEO value and user engagement.
+ARTICLE_ENHANCEMENT_END
